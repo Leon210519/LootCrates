@@ -46,6 +46,7 @@ keys:
 
 # Reward messages
 rewards:
+  reward_received: "&aYou received: &f{reward}"
   received: "&aYou received: &f{reward_display}"
   broadcast_common: "&e{player} &areceived &f{reward_display} &afrom {crate_display}!"
   broadcast_rare: "&6✦ &e{player} &6received the rare reward &f{reward_display} &6from {crate_display}! &6✦"
