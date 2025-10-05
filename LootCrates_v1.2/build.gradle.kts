@@ -11,6 +11,8 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     // JitPack nur für wirklich verfügbare Artefakte
     maven("https://jitpack.io")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.extendedclip.com/content/repositories/public/")
 }
 
 dependencies {

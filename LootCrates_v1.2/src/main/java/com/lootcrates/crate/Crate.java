@@ -124,7 +124,7 @@ public class Crate {
                     meta.setLore(coloredLore);
                 }
                 if (glow) {
-                    meta.addEnchant(org.bukkit.enchantments.Enchantment.DURABILITY, 1, true);
+                    meta.addEnchant(org.bukkit.enchantments.Enchantment.UNBREAKING, 1, true);
                     meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
                 }
                 item.setItemMeta(meta);
