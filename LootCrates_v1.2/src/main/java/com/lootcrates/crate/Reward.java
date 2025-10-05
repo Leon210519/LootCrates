@@ -119,23 +119,14 @@ public class Reward {
                 }
             }
             case SPECIAL_ITEM -> {
-                String templateId = sec.getString("template");
-                if (templateId != null) {
-                    try {
-                        TemplateItems.TemplateItem template = TemplateItems.buildFrom(templateId, 
-                            Configs.templates.getConfigurationSection("templates." + templateId));
-                        reward.item = (template != null ? template.stack().clone() : null);
-                        reward.itemAmount = sec.getInt("amount", 1);
-                        if (reward.item != null) {
-                            reward.item.setAmount(Math.max(1, reward.itemAmount));
-                            reward.items.add(reward.item);
-                        }
-                    } catch (Exception e) {
-                        // SpecialItems not available or template not found
-                        reward.item = new ItemStack(Material.PAPER);
-                        reward.items.add(reward.item);
-                    }
+                reward.templateId = sec.getString("template");
+                reward.itemAmount = sec.getInt("amount", 1);
+                reward.item = readItem(sec.getConfigurationSection("item"));
+                if (reward.item == null) {
+                    reward.item = new ItemStack(Material.PAPER);
                 }
+                reward.item.setAmount(Math.max(1, reward.itemAmount));
+                reward.items.add(reward.item);
             }
             case BUNDLE -> {
                 reward.bundleName = sec.getString("bundle_name", "Reward Bundle");
@@ -160,21 +151,25 @@ public class Reward {
                 reward.currencyType = sec.getString("currency_type", "PLAYER_POINTS");
                 reward.amount = sec.getDouble("amount", 0.0);
             }
-                case SPECIALITEM -> {
-                    reward.templateId = sec.getString("template");
-                    reward.itemLevel = sec.getInt("level", 1);
-                    reward.itemExperience = sec.getLong("experience", 0L);
+            case SPECIALITEM -> {
+                reward.templateId = sec.getString("template");
+                reward.itemLevel = sec.getInt("level", 1);
+                reward.itemExperience = sec.getLong("experience", 0L);
+                reward.item = readItem(sec.getConfigurationSection("item"));
+                if (reward.item != null) {
+                    reward.items.add(reward.item);
                 }
-                case SPECIALITEM_CHOICE -> {
-                    reward.templateIds = sec.getStringList("templates");
-                    reward.itemLevel = sec.getInt("level", 1);
-                    reward.itemExperience = sec.getLong("experience", 0L);
-                }
-                case SPECIALITEM_SET -> {
-                    reward.templateIds = sec.getStringList("templates");
-                    reward.itemLevel = sec.getInt("level", 1);
-                    reward.itemExperience = sec.getLong("experience", 0L);
-                }
+            }
+            case SPECIALITEM_CHOICE -> {
+                reward.templateIds = sec.getStringList("templates");
+                reward.itemLevel = sec.getInt("level", 1);
+                reward.itemExperience = sec.getLong("experience", 0L);
+            }
+            case SPECIALITEM_SET -> {
+                reward.templateIds = sec.getStringList("templates");
+                reward.itemLevel = sec.getInt("level", 1);
+                reward.itemExperience = sec.getLong("experience", 0L);
+            }
         }
 
         // Handle display item
@@ -202,16 +197,7 @@ public class Reward {
             case MONEY, MONEY_XP -> new ItemStack(Material.GOLD_INGOT);
             case EXPERIENCE -> new ItemStack(Material.EXPERIENCE_BOTTLE);
             case ITEM, SPECIAL_ITEM -> item != null ? item.clone() : new ItemStack(Material.CHEST);
-                case SPECIALITEM, SPECIALITEM_CHOICE, SPECIALITEM_SET -> {
-                    // Try to get display from SpecialItems plugin
-                    try {
-                        com.specialitems.SpecialItemsPlugin specialItems = com.specialitems.SpecialItemsPlugin.getInstance();
-                        if (specialItems != null && templateId != null) {
-                            yield specialItems.getTemplateManager().createItemStack(templateId, itemLevel, itemExperience);
-                        }
-                    } catch (Exception ignored) {}
-                    yield new ItemStack(Material.NETHERITE_PICKAXE);
-                }
+            case SPECIALITEM, SPECIALITEM_CHOICE, SPECIALITEM_SET -> new ItemStack(Material.NETHERITE_PICKAXE);
             case COMMAND -> new ItemStack(Material.PAPER);
             case KEY -> new ItemStack(Material.TRIPWIRE_HOOK);
             case BUNDLE -> new ItemStack(Material.CHEST);

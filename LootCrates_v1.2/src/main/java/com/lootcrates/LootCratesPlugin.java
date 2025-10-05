@@ -204,10 +204,10 @@ public class LootCratesPlugin extends JavaPlugin {
         
         // Item plugins
         if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null) {
-            this.itemHook = new ItemsAdderHook(this);
+            this.itemHook = new ItemsAdderHook();
             getLogger().info("ItemsAdder integration enabled.");
         } else if (Bukkit.getPluginManager().getPlugin("Oraxen") != null) {
-            this.itemHook = new OraxenHook(this);
+            this.itemHook = new OraxenHook();
             getLogger().info("Oraxen integration enabled.");
         }
     }
@@ -217,7 +217,7 @@ public class LootCratesPlugin extends JavaPlugin {
     }
     
     private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new CrateListener(this), this);
+        getServer().getPluginManager().registerEvents(new CrateListener(), this);
         getServer().getPluginManager().registerEvents(new CrateBlockListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
     }

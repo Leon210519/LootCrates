@@ -100,9 +100,8 @@ public class LootCratesAPI {
     public boolean forceOpenCrate(Player player, String crateId) {
         Crate crate = getCrate(crateId);
         if (crate == null) return false;
-        
-        // This would call the CrateOpener.forceOpen method
-        // CrateOpener.forceOpen(plugin, player, crate);
+
+        com.lootcrates.command.CrateOpener.forceOpen(plugin, player, crate);
         return true;
     }
     
