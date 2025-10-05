@@ -1,0 +1,1245 @@
+# ============================================================
+# LootCrates Plugin Configuration v2.0
+# Advanced crate system with tiers, animations, pity protection
+# ============================================================
+
+# Global plugin settings
+settings:
+  # Language settings
+  language: "en"
+  
+  # Database settings
+  database:
+    type: "SQLITE" # SQLITE or MYSQL
+    mysql:
+      host: "localhost"
+      port: 3306
+      database: "lootcrates"
+      username: "root"
+      password: "password"
+      ssl: false
+  
+  # GUI settings
+  default-gui-title: "&6&lLoot Crates"
+  animation-speed: 2 # ticks between animation frames
+  animation-duration: 120 # total animation ticks (6 seconds)
+  close-on-reward: true
+  
+  # Sound settings
+  sounds:
+    enabled: true
+    open: "UI_TOAST_CHALLENGE_COMPLETE"
+    reward: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    tick: "UI_BUTTON_CLICK"
+    rare_reward: "ENTITY_PLAYER_LEVELUP"
+    legendary_reward: "UI_TOAST_CHALLENGE_COMPLETE"
+    volume: 1.0
+    pitch: 1.0
+  
+  # Particle effects
+  particles:
+    enabled: true
+    crate_location: "VILLAGER_HAPPY"
+    opening: "FIREWORKS_SPARK"
+    reward: "VILLAGER_HAPPY"
+    rare_reward: "CRIT_MAGIC"
+    legendary_reward: "DRAGON_BREATH"
+    amount: 10
+  
+  # Economy integration
+  economy:
+    vault_enabled: true
+    playerpoints_enabled: true
+    custom_currency_enabled: false
+    custom_currency_name: "Gems"
+  
+  # Anti-duplicate system
+  duplicate_protection:
+    enabled: true
+    mode: "REROLL" # REROLL, CONVERT_SHARDS, CONVERT_CURRENCY
+    shard_conversion_rate: 0.1 # 10% of item value
+    max_rerolls: 3
+  
+  # Pity protection system
+  pity_protection:
+    enabled: true
+    track_per_crate: true
+    reset_on_rare: true
+  
+  # Cooldown system
+  cooldowns:
+    enabled: true
+    bypass_permission: "lootcrates.bypass.cooldown"
+  
+  # Daily limits
+  daily_limits:
+    enabled: true
+    reset_time: "00:00" # 24-hour format
+    bypass_permission: "lootcrates.bypass.limit"
+  
+  # Offline queue for rewards
+  offline_queue:
+    enabled: true
+    max_queue_size: 100
+    notify_on_join: true
+  
+  # Hologram integration
+  holograms:
+    enabled: true
+    provider: "DECENT" # DECENT or HOLOGRAPHIC_DISPLAYS
+    update_interval: 20 # ticks
+    show_stats: true
+    lines:
+      - "&6&l{crate_name}"
+      - "&7Right click to open"
+      - "&8Keys: {player_keys}"
+      - "&8Last winner: {last_winner}"
+  
+  # Leaderboards
+  leaderboards:
+    enabled: true
+    update_interval: 300 # seconds
+    top_size: 10
+
+# Message configuration
+messages:
+  prefix: "&8[&6LootCrates&8] "
+  no_permission: "&cYou don't have permission to do this!"
+  player_only: "&cThis command can only be used by players!"
+  invalid_player: "&cPlayer '{player}' not found or offline!"
+  invalid_crate: "&cCrate '{crate}' doesn't exist!"
+  crate_reloaded: "&aConfiguration reloaded successfully!"
+  
+  # Key messages
+  no_key: "&cYou need a {crate_display}&c key to open this crate!"
+  key_used: "&eUsed key from {slot}"
+  keys_given: "&aGave &e{amount}x {crate_display} &akeys to &e{player}"
+  keys_received: "&aYou received &e{amount}x {crate_display} &akeys!"
+  
+  # Reward messages
+  reward_received: "&aYou received: &f{reward}"
+  reward_broadcast: "&e{player} &areceived &f{reward} &afrom {crate_display}!"
+  rare_reward_broadcast: "&6✦ &e{player} &6received the rare reward &f{reward} &6from {crate_display}! &6✦"
+  
+  # Cooldown messages
+  cooldown_active: "&cYou must wait &e{time} &cbefore opening this crate again!"
+  cooldown_expired: "&aYour cooldown for {crate_display} has expired!"
+  
+  # Limit messages
+  daily_limit_reached: "&cYou have reached your daily limit for {crate_display}!"
+  daily_limit_reset: "&aYour daily limits have been reset!"
+  
+  # Pity messages
+  pity_increased: "&eYour luck is increasing... ({count}/{max})"
+  pity_triggered: "&6Your luck paid off! Guaranteed rare reward!"
+  
+  # Block binding
+  block_bound: "&aBound {crate_display} &ato block at &e{location}"
+  block_unbound: "&aUnbound crate from block at &e{location}"
+  
+  # Queue messages
+  offline_rewards: "&aYou have &e{count} &arewards waiting from offline crate openings!"
+  queue_full: "&cYour offline reward queue is full! Please claim your rewards."
+
+# Crate tiers and rarities
+tiers:
+  common:
+    display_name: "&7Common"
+    color: "&7"
+    pity_threshold: 0
+    broadcast_rare: false
+  uncommon:
+    display_name: "&aUncommon"
+    color: "&a"
+    pity_threshold: 10
+    broadcast_rare: false
+  rare:
+    display_name: "&9Rare"
+    color: "&9"
+    pity_threshold: 25
+    broadcast_rare: true
+  epic:
+    display_name: "&5Epic"
+    color: "&5"
+    pity_threshold: 50
+    broadcast_rare: true
+  legendary:
+    display_name: "&6Legendary"
+    color: "&6"
+    pity_threshold: 100
+    broadcast_rare: true
+  mythic:
+    display_name: "&cMythic"
+    color: "&c"
+    pity_threshold: 200
+    broadcast_rare: true
+
+# Crate definitions
+crates:
+  # Common Tier Crate
+  COMMON:
+    display: "&7&lCommon Crate"
+    tier: "common"
+    enabled: true
+    
+    # Key configuration
+    key:
+      display: "&7Common Key"
+      material: "TRIPWIRE_HOOK"
+      custom_model_data: 21000
+      lore:
+        - "&7Used to open Common Crates"
+        - "&8Right-click a crate to use"
+    
+    # Opening method
+    open_method: "GUI" # GUI, BLOCK, or BOTH
+    
+    # Restrictions
+    cooldown: 300 # seconds (5 minutes)
+    daily_limit: 10
+    required_permission: "lootcrates.open.common"
+    
+    # Pity protection
+    pity:
+      enabled: true
+      threshold: 15 # guaranteed rare after 15 opens without rare
+      rare_weight_multiplier: 2.0
+    
+    # Animation settings
+    animation:
+      enabled: true
+      speed: 2
+      duration: 100
+      style: "ROULETTE" # ROULETTE, EXPANDING, CASCADE
+    
+    # Location settings (for block crates)
+    locations:
+      - world: "world"
+        x: 100
+        y: 64
+        z: 100
+      
+    # Hologram settings
+    hologram:
+      enabled: true
+      height_offset: 2.0
+      lines:
+        - "&7&lCommon Crate"
+        - "&7Right-click to open"
+        - "&8Cost: 1 Common Key"
+    
+    # Rewards
+    rewards:
+      # Money rewards
+      - id: "money_small"
+        weight: 40
+        tier: "common"
+        type: "MONEY"
+        amount: 100
+        display:
+          material: "GOLD_NUGGET"
+          name: "&6$100"
+          lore:
+            - "&7A small amount of money"
+            
+      - id: "money_medium"
+        weight: 20
+        tier: "uncommon"
+        type: "MONEY"
+        amount: 500
+        display:
+          material: "GOLD_INGOT"
+          name: "&6$500"
+          lore:
+            - "&7A decent amount of money"
+    
+      # Item rewards
+      - id: "iron_tools"
+        weight: 25
+        tier: "common"
+        type: "ITEM"
+        items:
+          - material: "IRON_SWORD"
+            amount: 1
+            enchantments:
+              - "DURABILITY:1"
+          - material: "IRON_PICKAXE"
+            amount: 1
+            enchantments:
+              - "EFFICIENCY:2"
+        display:
+          material: "IRON_SWORD"
+          name: "&7Iron Tool Set"
+          lore:
+            - "&7Basic iron tools for mining"
+            
+      # Experience rewards
+      - id: "experience"
+        weight: 30
+        tier: "common"
+        type: "EXPERIENCE"
+        amount: 50
+        display:
+          material: "EXPERIENCE_BOTTLE"
+          name: "&aExperience Bottle"
+          lore:
+            - "&7+50 Experience Points"
+            
+      # Command rewards (rare)
+      - id: "fly_time"
+        weight: 5
+        tier: "rare"
+        type: "COMMAND"
+        commands:
+          - "lp user {player} permission settemp minecraft.command.fly true 3600"
+          - "fly {player}"
+        display:
+          material: "FEATHER"
+          name: "&9Temporary Flight"
+          lore:
+            - "&7Grants flight for 1 hour"
+            - "&9Rare Reward!"
+
+  # Prestige Crate (Enhanced version of existing)
+  PRESTIGE:
+    display: "&d&lPrestige Crate"
+    tier: "epic"
+    enabled: true
+    
+    key:
+      display: "&dPrestige Key"
+      material: "TRIPWIRE_HOOK"
+      custom_model_data: 21001
+      lore:
+        - "&dUsed to open Prestige Crates"
+        - "&8Contains powerful rewards"
+    
+    open_method: "BOTH"
+    cooldown: 3600 # 1 hour
+    daily_limit: 3
+    required_permission: "lootcrates.open.prestige"
+    
+    pity:
+      enabled: true
+      threshold: 10
+      rare_weight_multiplier: 3.0
+    
+    animation:
+      enabled: true
+      speed: 1
+      duration: 140
+      style: "EXPANDING"
+    
+    hologram:
+      enabled: true
+      height_offset: 2.5
+      lines:
+        - "&d&lPrestige Crate"
+        - "&dExclusive rewards await"
+        - "&8Cost: 1 Prestige Key"
+    
+    rewards:
+      # Large money rewards
+      - id: "money_large"
+        weight: 20
+        tier: "epic"
+        type: "MONEY"
+        amount: 10000
+        display:
+          material: "DIAMOND"
+          name: "&b$10,000"
+          lore:
+            - "&7A substantial amount of money"
+            
+      # Special Items integration
+      - id: "si_stone_miner"
+        weight: 15
+        tier: "epic"
+        type: "SPECIAL_ITEM"
+        template: "stone_miner"
+        
+      - id: "si_novice_farmer"
+        weight: 15
+        tier: "epic"
+        type: "SPECIAL_ITEM"
+        template: "novice_farmer"
+        
+      # Premium currency
+      - id: "premium_points"
+        weight: 10
+        tier: "legendary"
+        type: "CURRENCY"
+        currency_type: "PLAYER_POINTS"
+        amount: 100
+        display:
+          material: "EMERALD"
+          name: "&a100 Premium Points"
+          lore:
+            - "&7Spend in the premium shop"
+            
+      # Rare permission/rank rewards
+      - id: "temporary_vip"
+        weight: 5
+        tier: "legendary"
+        type: "COMMAND"
+        commands:
+          - "lp user {player} parent addtemp vip 7d"
+        display:
+          material: "PAPER"
+          name: "&6Temporary VIP Rank"
+          lore:
+            - "&7Grants VIP rank for 7 days"
+            - "&6Legendary Reward!"
+            
+      # Bundle rewards
+      - id: "starter_bundle"
+        weight: 25
+        tier: "rare"
+        type: "BUNDLE"
+        bundle_name: "&9Starter Bundle"
+        items:
+          - material: "DIAMOND_SWORD"
+            amount: 1
+            enchantments:
+              - "SHARPNESS:3"
+              - "DURABILITY:2"
+          - material: "DIAMOND_ARMOR"
+            amount: 4 # full set
+            enchantments:
+              - "PROTECTION:2"
+        money: 1000
+        experience: 100
+        display:
+          material: "CHEST"
+          name: "&9Starter Equipment Bundle"
+          lore:
+            - "&7Full diamond armor set"
+            - "&7Enchanted diamond sword"
+            - "&7+$1,000 and 100 XP"
+            - "&9Rare Bundle!"
+
+  # Event Crate Example
+  HALLOWEEN:
+    display: "&6&lHalloween Crate"
+    tier: "legendary"
+    enabled: false # Enable during Halloween event
+    
+    key:
+      display: "&6Halloween Key"
+      material: "PUMPKIN"
+      custom_model_data: 21002
+      glow: true
+    
+    open_method: "GUI"
+    cooldown: 7200 # 2 hours
+    daily_limit: 1
+    required_permission: "lootcrates.open.halloween"
+    
+    # Time restrictions
+    available_from: "2024-10-01 00:00:00"
+    available_until: "2024-11-01 23:59:59"
+    
+    animation:
+      enabled: true
+      speed: 1
+      duration: 160
+      style: "CASCADE"
+      
+    rewards:
+      - id: "halloween_title"
+        weight: 30
+        tier: "legendary"
+        type: "COMMAND"
+        commands:
+          - "lp user {player} meta addprefix 100 '&6[Spooky] '"
+        display:
+          material: "JACK_O_LANTERN"
+          name: "&6Spooky Title"
+          lore:
+            - "&7Permanent Halloween title"
+            
+      - id: "halloween_cosmetics"
+        weight: 20
+        tier: "mythic"
+        type: "ITEM"
+        items:
+          - material: "CARVED_PUMPKIN"
+            amount: 1
+            name: "&6Haunted Pumpkin"
+            enchantments:
+              - "DURABILITY:10"
+            flags:
+              - "HIDE_ENCHANTS"
+        display:
+          material: "CARVED_PUMPKIN"
+          name: "&6Haunted Pumpkin Helmet"
+          lore:
+            - "&7A mysterious Halloween cosmetic"
+            - "&cMythic Reward!"
+
+# Shop integration (for buying keys with currency)
+shop:
+  enabled: true
+  gui_title: "&6&lCrate Key Shop"
+  
+  items:
+    common_key:
+      slot: 10
+      crate: "COMMON"
+      key_amount: 1
+      cost:
+        type: "MONEY" # MONEY, PLAYER_POINTS, CUSTOM
+        amount: 1000
+      display:
+        material: "TRIPWIRE_HOOK"
+        name: "&7Common Key"
+        lore:
+          - "&7Cost: &6$1,000"
+          - "&7Click to purchase"
+          
+    prestige_key:
+      slot: 12
+      crate: "PRESTIGE"
+      key_amount: 1
+      cost:
+        type: "PLAYER_POINTS"
+        amount: 50
+      display:
+        material: "TRIPWIRE_HOOK"
+        name: "&dPrestige Key"
+        lore:
+          - "&7Cost: &a50 Points"
+          - "&7Click to purchase"
+          
+    prestige_key_bundle:
+      slot: 14
+      crate: "PRESTIGE"
+      key_amount: 5
+      cost:
+        type: "PLAYER_POINTS"
+        amount: 200
+      display:
+        material: "CHEST"
+        name: "&d5x Prestige Keys"
+        lore:
+          - "&7Cost: &a200 Points"
+          - "&7Save 50 points!"
+          - "&7Click to purchase"
+
+    # ============================================================
+    # SPECIAL ITEMS THEMED CRATES
+    # These crates contain SpecialItems plugin items
+    # ============================================================
+  
+    # Common SpecialItems Crate
+    SPECIALITEMS_COMMON:
+      display: "&7&lCommon Tools Crate"
+      tier: "common"
+      enabled: true
+    
+      key:
+        display: "&7Common Tools Key"
+        material: "TRIPWIRE_HOOK"
+        custom_model_data: 22000
+        lore:
+          - "&7Used to open Common Tools Crates"
+          - "&8Contains basic special tools"
+    
+      open_method: "BOTH"
+      cooldown: 600 # 10 minutes
+      daily_limit: 15
+      required_permission: "lootcrates.open.specialitems.common"
+    
+      pity:
+        enabled: true
+        threshold: 5
+        rare_weight_multiplier: 1.5
+    
+      animation:
+        enabled: true
+        speed: 2
+        duration: 100
+        style: "SPINNING"
+    
+      hologram:
+        enabled: true
+        height_offset: 2.0
+        lines:
+          - "&7&lCommon Tools"
+          - "&7Basic special equipment"
+          - "&8Cost: 1 Common Tools Key"
+    
+      rewards:
+        # Common helmet
+        - id: "common_helm"
+          weight: 20
+          tier: "common"
+          type: "SPECIALITEM"
+          template: "common_helm"
+          level: 1
+          display:
+            material: "IRON_HELMET"
+            name: "&7Common Iron Helm"
+            lore:
+              - "&7Basic protection gear"
+              - "&8Special Item"
+      
+        # Common chestplate
+        - id: "common_chest"
+          weight: 20
+          tier: "common"
+          type: "SPECIALITEM"
+          template: "common_chest"
+          level: 1
+          display:
+            material: "IRON_CHESTPLATE"
+            name: "&7Common Iron Chestplate"
+            lore:
+              - "&7Basic protection gear"
+              - "&8Special Item"
+      
+        # Common tools
+        - id: "common_tools"
+          weight: 30
+          tier: "common"
+          type: "SPECIALITEM_CHOICE"
+          templates: ["common_pick", "common_sword", "common_axe", "common_hoe"]
+          level: 1
+          display:
+            material: "IRON_PICKAXE"
+            name: "&7Common Tool Choice"
+            lore:
+              - "&7Choose from various tools"
+              - "&8Special Items"
+      
+        # Money filler
+        - id: "money_common"
+          weight: 30
+          tier: "common"
+          type: "MONEY"
+          amount: 250
+          display:
+            material: "GOLD_NUGGET"
+            name: "&6$250"
+            lore:
+              - "&7Basic earnings"
+
+    # Uncommon SpecialItems Crate  
+    SPECIALITEMS_UNCOMMON:
+      display: "&a&lUncommon Tools Crate"
+      tier: "uncommon"
+      enabled: true
+    
+      key:
+        display: "&aUncommon Tools Key"
+        material: "TRIPWIRE_HOOK"
+        custom_model_data: 22001
+        lore:
+          - "&aUsed to open Uncommon Tools Crates"
+          - "&8Contains improved special tools"
+    
+      open_method: "BOTH"
+      cooldown: 900 # 15 minutes
+      daily_limit: 10
+      required_permission: "lootcrates.open.specialitems.uncommon"
+    
+      pity:
+        enabled: true
+        threshold: 8
+        rare_weight_multiplier: 2.0
+    
+      animation:
+        enabled: true
+        speed: 2
+        duration: 110
+        style: "EXPANDING"
+    
+      hologram:
+        enabled: true
+        height_offset: 2.2
+        lines:
+          - "&a&lUncommon Tools"
+          - "&aImproved special equipment"
+          - "&8Cost: 1 Uncommon Tools Key"
+    
+      rewards:
+        # Uncommon armor set
+        - id: "uncommon_armor"
+          weight: 25
+          tier: "uncommon"
+          type: "SPECIALITEM"
+          template: "uncommon_helm"
+          level: 1
+          display:
+            material: "DIAMOND_HELMET"
+            name: "&aUncommon Diamond Helm"
+            lore:
+              - "&aImproved protection"
+              - "&8Special Item"
+      
+        # Uncommon tools
+        - id: "uncommon_tools"
+          weight: 30
+          tier: "uncommon"
+          type: "SPECIALITEM_CHOICE"
+          templates: ["uncommon_pick", "uncommon_sword", "uncommon_axe", "uncommon_hoe"]
+          level: 1
+          display:
+            material: "DIAMOND_PICKAXE"
+            name: "&aUncommon Tool Choice"
+            lore:
+              - "&aChoose from enhanced tools"
+              - "&8Special Items"
+      
+        # Leveled common item
+        - id: "leveled_common"
+          weight: 20
+          tier: "uncommon"
+          type: "SPECIALITEM"
+          template: "common_pick"
+          level: 5
+          display:
+            material: "IRON_PICKAXE"
+            name: "&7Leveled Common Pick &8(Lv.5)"
+            lore:
+              - "&7Pre-leveled tool"
+              - "&8Special Item"
+      
+        # Money
+        - id: "money_uncommon"
+          weight: 25
+          tier: "uncommon"
+          type: "MONEY"
+          amount: 750
+          display:
+            material: "GOLD_INGOT"
+            name: "&6$750"
+            lore:
+              - "&aDecent earnings"
+
+    # Rare SpecialItems Crate
+    SPECIALITEMS_RARE:
+      display: "&9&lRare Tools Crate"
+      tier: "rare"
+      enabled: true
+    
+      key:
+        display: "&9Rare Tools Key"
+        material: "TRIPWIRE_HOOK"
+        custom_model_data: 22002
+        lore:
+          - "&9Used to open Rare Tools Crates"
+          - "&8Contains powerful special tools"
+    
+      open_method: "BOTH"
+      cooldown: 1800 # 30 minutes
+      daily_limit: 6
+      required_permission: "lootcrates.open.specialitems.rare"
+    
+      pity:
+        enabled: true
+        threshold: 12
+        rare_weight_multiplier: 2.5
+    
+      animation:
+        enabled: true
+        speed: 1
+        duration: 130
+        style: "WAVE"
+    
+      hologram:
+        enabled: true
+        height_offset: 2.5
+        lines:
+          - "&9&lRare Tools"
+          - "&9Powerful special equipment"
+          - "&8Cost: 1 Rare Tools Key"
+    
+      rewards:
+        # Rare armor pieces
+        - id: "rare_armor_choice"
+          weight: 20
+          tier: "rare"
+          type: "SPECIALITEM_CHOICE"
+          templates: ["rare_helm", "rare_chest", "rare_legs", "rare_boots"]
+          level: 1
+          display:
+            material: "NETHERITE_HELMET"
+            name: "&9Rare Netherite Armor Choice"
+            lore:
+              - "&9Choose from rare armor pieces"
+              - "&8Special Items"
+      
+        # Rare weapons and tools
+        - id: "rare_tools"
+          weight: 25
+          tier: "rare"
+          type: "SPECIALITEM"
+          template: "rare_sword"
+          level: 1
+          display:
+            material: "NETHERITE_SWORD"
+            name: "&9Rare Netherite Blade"
+            lore:
+              - "&9Powerful weapon"
+              - "&8Special Item"
+      
+        # High-level uncommon
+        - id: "high_level_uncommon"
+          weight: 20
+          tier: "rare"
+          type: "SPECIALITEM"
+          template: "uncommon_pick"
+          level: 15
+          display:
+            material: "DIAMOND_PICKAXE"
+            name: "&aHigh-Level Uncommon Pick &8(Lv.15)"
+            lore:
+              - "&9Rare Reward!"
+              - "&8Special Item"
+      
+        # XP Boost
+        - id: "xp_rare"
+          weight: 20
+          tier: "rare"
+          type: "EXPERIENCE"
+          amount: 500
+          display:
+            material: "EXPERIENCE_BOTTLE"
+            name: "&9Large XP Bottle"
+            lore:
+              - "&7+500 Experience Points"
+              - "&9Rare!"
+      
+        # Money
+        - id: "money_rare"
+          weight: 15
+          tier: "rare"
+          type: "MONEY"
+          amount: 2000
+          display:
+            material: "EMERALD"
+            name: "&6$2,000"
+            lore:
+              - "&9Great earnings!"
+
+    # Epic SpecialItems Crate
+    SPECIALITEMS_EPIC:
+      display: "&d&lEpic Tools Crate"
+      tier: "epic"
+      enabled: true
+    
+      key:
+        display: "&dEpic Tools Key"
+        material: "TRIPWIRE_HOOK"
+        custom_model_data: 22003
+        lore:
+          - "&dUsed to open Epic Tools Crates"
+          - "&8Contains mythic special tools"
+    
+      open_method: "BOTH"
+      cooldown: 3600 # 1 hour
+      daily_limit: 3
+      required_permission: "lootcrates.open.specialitems.epic"
+    
+      pity:
+        enabled: true
+        threshold: 15
+        rare_weight_multiplier: 3.0
+    
+      animation:
+        enabled: true
+        speed: 1
+        duration: 150
+        style: "SPIRAL"
+    
+      hologram:
+        enabled: true
+        height_offset: 3.0
+        lines:
+          - "&d&lEpic Tools"
+          - "&dMythic special equipment"
+          - "&8Cost: 1 Epic Tools Key"
+    
+      rewards:
+        # Epic armor set
+        - id: "epic_armor_set"
+          weight: 15
+          tier: "epic"
+          type: "SPECIALITEM_SET"
+          templates: ["epic_helm", "epic_chest", "epic_legs", "epic_boots"]
+          level: 1
+          display:
+            material: "NETHERITE_CHESTPLATE"
+            name: "&dMythic Armor Set"
+            lore:
+              - "&dComplete armor set"
+              - "&5Epic Reward!"
+              - "&8Special Items"
+      
+        # Epic tools
+        - id: "epic_weapon"
+          weight: 20
+          tier: "epic"
+          type: "SPECIALITEM"
+          template: "epic_sword"
+          level: 1
+          display:
+            material: "NETHERITE_SWORD"
+            name: "&dMythic Blade"
+            lore:
+              - "&dIncredibly powerful"
+              - "&5Epic!"
+              - "&8Special Item"
+      
+        # Epic tools choice
+        - id: "epic_tools_choice"
+          weight: 25
+          tier: "epic"
+          type: "SPECIALITEM_CHOICE"
+          templates: ["epic_pick", "epic_axe", "epic_hoe"]
+          level: 1
+          display:
+            material: "NETHERITE_PICKAXE"
+            name: "&dMythic Tool Choice"
+            lore:
+              - "&dChoose your tool"
+              - "&5Epic Reward!"
+              - "&8Special Items"
+      
+        # High-level rare
+        - id: "maxed_rare"
+          weight: 15
+          tier: "epic"
+          type: "SPECIALITEM"
+          template: "rare_pick"
+          level: 25
+          display:
+            material: "NETHERITE_PICKAXE"
+            name: "&9Maxed Rare Pick &8(Lv.25)"
+            lore:
+              - "&5Epic level item!"
+              - "&8Special Item"
+      
+        # Large money
+        - id: "money_epic"
+          weight: 20
+          tier: "epic"
+          type: "MONEY"
+          amount: 5000
+          display:
+            material: "DIAMOND"
+            name: "&6$5,000"
+            lore:
+              - "&dEpic earnings!"
+      
+        # Command reward
+        - id: "epic_command"
+          weight: 5
+          tier: "legendary"
+          type: "COMMAND"
+          commands:
+            - "lp user {player} permission settemp minecraft.command.fly true 7200"
+            - "fly {player}"
+          display:
+            material: "ELYTRA"
+            name: "&d2 Hour Flight"
+            lore:
+              - "&dGrants flight for 2 hours"
+              - "&5Epic Reward!"
+
+    # Legendary SpecialItems Crate
+    SPECIALITEMS_LEGENDARY:
+      display: "&6&lLegendary Tools Crate"
+      tier: "legendary"
+      enabled: true
+    
+      key:
+        display: "&6Legendary Tools Key"
+        material: "TRIPWIRE_HOOK"
+        custom_model_data: 22004
+        lore:
+          - "&6Used to open Legendary Tools Crates"
+          - "&8Contains ultimate special tools"
+    
+      open_method: "BOTH"
+      cooldown: 7200 # 2 hours
+      daily_limit: 2
+      required_permission: "lootcrates.open.specialitems.legendary"
+    
+      pity:
+        enabled: true
+        threshold: 20
+        rare_weight_multiplier: 4.0
+    
+      animation:
+        enabled: true
+        speed: 1
+        duration: 180
+        style: "RAINBOW"
+    
+      hologram:
+        enabled: true
+        height_offset: 3.5
+        lines:
+          - "&6&lLegendary Tools"
+          - "&6Ultimate special equipment"
+          - "&8Cost: 1 Legendary Tools Key"
+    
+      rewards:
+        # Legendary armor set
+        - id: "legendary_armor_set"
+          weight: 10
+          tier: "legendary"
+          type: "SPECIALITEM_SET"
+          templates: ["legendary_helm", "legendary_chest", "legendary_legs", "legendary_boots"]
+          level: 1
+          display:
+            material: "NETHERITE_CHESTPLATE"
+            name: "&6Omega Armor Set"
+            lore:
+              - "&6Complete legendary set"
+              - "&6&lLEGENDARY!"
+              - "&8Special Items"
+      
+        # Legendary weapons
+        - id: "legendary_weapon"
+          weight: 15
+          tier: "legendary"
+          type: "SPECIALITEM"
+          template: "legendary_sword"
+          level: 1
+          display:
+            material: "NETHERITE_SWORD"
+            name: "&6Omega Blade"
+            lore:
+              - "&6Ultimate power"
+              - "&6&lLEGENDARY!"
+              - "&8Special Item"
+      
+        # Legendary tools
+        - id: "legendary_tools_choice"
+          weight: 20
+          tier: "legendary"
+          type: "SPECIALITEM_CHOICE"
+          templates: ["legendary_pick", "legendary_axe", "legendary_hoe"]
+          level: 1
+          display:
+            material: "NETHERITE_PICKAXE"
+            name: "&6Omega Tool Choice"
+            lore:
+              - "&6Choose your legendary tool"
+              - "&6&lLEGENDARY!"
+              - "&8Special Items"
+      
+        # Pre-leveled epic
+        - id: "leveled_epic"
+          weight: 15
+          tier: "legendary"
+          type: "SPECIALITEM"
+          template: "epic_sword"
+          level: 15
+          display:
+            material: "NETHERITE_SWORD"
+            name: "&dLeveled Mythic Blade &8(Lv.15)"
+            lore:
+              - "&6Legendary level item!"
+              - "&8Special Item"
+      
+        # Massive money
+        - id: "money_legendary"
+          weight: 25
+          tier: "legendary"
+          type: "MONEY"
+          amount: 15000
+          display:
+            material: "DIAMOND_BLOCK"
+            name: "&6$15,000"
+            lore:
+              - "&6&lLEGENDARY EARNINGS!"
+      
+        # Special commands
+        - id: "legendary_perks"
+          weight: 10
+          tier: "legendary"
+          type: "COMMAND"
+          commands:
+            - "lp user {player} permission settemp luckperms.user.promote true 86400"
+            - "lp user {player} permission settemp minecraft.command.gamemode true 86400"
+          display:
+            material: "BEACON"
+            name: "&6VIP Perks (24h)"
+            lore:
+              - "&6Temporary VIP permissions"
+              - "&6&lLEGENDARY!"
+      
+        # XP Bonanza
+        - id: "xp_legendary"
+          weight: 5
+          tier: "mythic"
+          type: "EXPERIENCE"
+          amount: 2000
+          display:
+            material: "ENCHANTED_BOOK"
+            name: "&6Massive XP Boost"
+            lore:
+              - "&7+2000 Experience Points"
+              - "&6&lLEGENDARY!"
+
+    # Starforged SpecialItems Crate (Ultimate)
+    SPECIALITEMS_STARFORGED:
+      display: "&4&lStarforged Crate"
+      tier: "mythic"
+      enabled: true
+    
+      key:
+        display: "&4Starforged Key"
+        material: "TRIPWIRE_HOOK"
+        custom_model_data: 22005
+        lore:
+          - "&4Used to open Starforged Crates"
+          - "&8Contains ultimate starforged tools"
+          - "&c&lEXTREMELY RARE"
+    
+      open_method: "BOTH"
+      cooldown: 14400 # 4 hours
+      daily_limit: 1
+      required_permission: "lootcrates.open.specialitems.starforged"
+    
+      pity:
+        enabled: true
+        threshold: 50
+        rare_weight_multiplier: 5.0
+    
+      animation:
+        enabled: true
+        speed: 1
+        duration: 200
+        style: "STARFALL"
+    
+      hologram:
+        enabled: true
+        height_offset: 4.0
+        lines:
+          - "&4&l✦ STARFORGED ✦"
+          - "&4Ultimate cosmic equipment"
+          - "&8Cost: 1 Starforged Key"
+          - "&c&lEXTREMELY RARE"
+    
+      rewards:
+        # Complete starforged set
+        - id: "starforged_complete_set"
+          weight: 5
+          tier: "mythic"
+          type: "SPECIALITEM_SET"
+          templates: ["imperial_helm", "imperial_chest", "imperial_legs", "imperial_boots", "imperial_sword", "imperial_pick", "imperial_axe", "imperial_hoe"]
+          level: 1
+          display:
+            material: "NETHERITE_CHESTPLATE"
+            name: "&4&l✦ Imperial Set ✦"
+            lore:
+              - "&4Complete starforged equipment"
+              - "&4&l✦ STARFORGED ✦"
+              - "&8Special Items"
+      
+        # Individual starforged items
+        - id: "starforged_weapon"
+          weight: 20
+          tier: "mythic"
+          type: "SPECIALITEM"
+          template: "imperial_sword"
+          level: 1
+          display:
+            material: "NETHERITE_SWORD"
+            name: "&4Imperial Blade"
+            lore:
+              - "&4Cosmic power incarnate"
+              - "&4&l✦ STARFORGED ✦"
+              - "&8Special Item"
+      
+        # Starforged tool choice
+        - id: "starforged_tools"
+          weight: 25
+          tier: "mythic"
+          type: "SPECIALITEM_CHOICE"
+          templates: ["imperial_pick", "imperial_axe", "imperial_hoe"]
+          level: 1
+          display:
+            material: "NETHERITE_PICKAXE"
+            name: "&4Imperial Tool Choice"
+            lore:
+              - "&4Choose your cosmic tool"
+              - "&4&l✦ STARFORGED ✦"
+              - "&8Special Items"
+      
+        # Max level legendary
+        - id: "max_legendary"
+          weight: 15
+          tier: "mythic"
+          type: "SPECIALITEM"
+          template: "legendary_sword"
+          level: 50
+          display:
+            material: "NETHERITE_SWORD"
+            name: "&6Max Level Omega Blade &8(Lv.50)"
+            lore:
+              - "&4Legendary at maximum power!"
+              - "&4&l✦ STARFORGED REWARD ✦"
+              - "&8Special Item"
+      
+        # Ultimate money reward
+        - id: "money_starforged"
+          weight: 20
+          tier: "mythic"
+          type: "MONEY"
+          amount: 50000
+          display:
+            material: "NETHERITE_INGOT"
+            name: "&6$50,000"
+            lore:
+              - "&4&l✦ STARFORGED WEALTH ✦"
+      
+        # Ultimate commands
+        - id: "starforged_ultimate"
+          weight: 10
+          tier: "mythic"
+          type: "COMMAND"
+          commands:
+            - "lp user {player} permission settemp * true 604800"
+            - "broadcast &4&l✦ {player} opened a STARFORGED crate and got ULTIMATE PERKS! ✦"
+          display:
+            material: "NETHER_STAR"
+            name: "&4Ultimate Perks (7 days)"
+            lore:
+              - "&4All permissions for 1 week"
+              - "&4&l✦ STARFORGED ✦"
+      
+        # Cosmic XP
+        - id: "xp_starforged"
+          weight: 5
+          tier: "mythic"
+          type: "EXPERIENCE"
+          amount: 10000
+          display:
+            material: "NETHER_STAR"
+            name: "&4Cosmic Experience"
+            lore:
+              - "&7+10,000 Experience Points"
+              - "&4&l✦ STARFORGED ✦"
+
+# Leaderboard configuration
+leaderboards:
+  total_opens:
+    enabled: true
+    display_name: "&6Top Crate Openers"
+    head_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGZlYjM5ZDcxZWY4ZTZhNDI2NDY1OTMzOTNhNTc1M2NlMjQxMjAyMjY5NjU5Y2Q0OGNkNjM2YWFjOGNmZmEifX19"
+    
+  money_earned:
+    enabled: true
+    display_name: "&6Top Money Winners"
+    head_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdhZWU5YTc1YmYwZGY3ODk3MTgzMDE1Y2NhMGIyYTdkNzU1YzYzNzg4OWIzMmZmZjY4NGYzZmY1ZTlkYjEifX19"
+    
+  rare_items:
+    enabled: true
+    display_name: "&6Lucky Players"
+    head_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGZlYjM5ZDcxZWY4ZTZhNDI2NDY1OTMzOTNhNTc1M2NlMjQxMjAyMjY5NjU5Y2Q0OGNkNjM2YWFjOGNmZmEifX19"

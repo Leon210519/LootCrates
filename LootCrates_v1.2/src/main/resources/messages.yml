@@ -1,0 +1,192 @@
+# ============================================================
+# LootCrates Plugin Messages Configuration
+# Supports color codes with & and hex colors with &#RRGGBB
+# ============================================================
+
+# General messages
+general:
+  prefix: "&8[&6LootCrates&8] "
+  no_permission: "&cYou don't have permission to do this!"
+  player_only: "&cThis command can only be used by players!"
+  console_only: "&cThis command can only be used from console!"
+  invalid_player: "&cPlayer '&e{player}&c' not found or offline!"
+  invalid_crate: "&cCrate '&e{crate}&c' doesn't exist!"
+  invalid_number: "&cInvalid number: &e{input}"
+  config_reloaded: "&aConfiguration reloaded successfully!"
+  feature_disabled: "&cThis feature is currently disabled!"
+
+# Command help messages
+help:
+  header: "&6&m─────────────&r &6LootCrates Help &6&m─────────────"
+  footer: "&6&m──────────────────────────────────────────────"
+  commands:
+    open: "&e/crate open <crate> &7- Open a crate with a key"
+    preview: "&e/crate preview <crate> &7- Preview crate rewards"
+    list: "&e/crate list &7- List all available crates"
+    stats: "&e/crate stats [player] &7- View crate statistics"
+    shop: "&e/crate shop &7- Open the key shop"
+    history: "&e/crate history [player] &7- View opening history"
+  admin_commands:
+    givekey: "&e/crate givekey <player> <crate> <amount> &7- Give keys"
+    reload: "&e/crate reload &7- Reload configuration"
+    bind: "&e/crate bind <crate> &7- Bind crate to target block"
+    unbind: "&e/crate unbind &7- Unbind crate from target block"
+    force: "&e/crate force <player> <crate> &7- Force open for testing"
+    migrate: "&e/crate migrate &7- Migrate old data"
+
+# Key related messages
+keys:
+  no_key: "&cYou need a {crate_display}&c key to open this crate!"
+  key_used: "&eUsed {key_display} &efrom {slot}"
+  keys_given: "&aGave &e{amount}x {key_display} &ato &e{player}"
+  keys_received: "&aYou received &e{amount}x {key_display}&a!"
+  key_purchase_success: "&aPurchased &e{amount}x {key_display} &afor &e{cost}!"
+  key_purchase_failed: "&cNot enough {currency_type} to purchase keys!"
+  invalid_key_item: "&cThis is not a valid crate key!"
+
+# Reward messages
+rewards:
+  received: "&aYou received: &f{reward_display}"
+  broadcast_common: "&e{player} &areceived &f{reward_display} &afrom {crate_display}!"
+  broadcast_rare: "&6✦ &e{player} &6received the rare reward &f{reward_display} &6from {crate_display}! &6✦"
+  broadcast_legendary: "&c✦ &l{player} &c&lreceived the LEGENDARY reward &f&l{reward_display} &c&lfrom {crate_display}! &c&l✦"
+  money_received: "&a+${amount}"
+  experience_received: "&a+{amount} XP"
+  currency_received: "&a+{amount} {currency_name}"
+  items_received: "&a{items}"
+  bundle_received: "&a{bundle_name} &7({item_count} items)"
+
+# Cooldown messages
+cooldowns:
+  active: "&cYou must wait &e{time} &cbefore opening {crate_display} &cagain!"
+  expired: "&aYour cooldown for {crate_display} &ahas expired!"
+  remaining: "&7Cooldown: &e{time}"
+  format:
+    days: "{days}d {hours}h {minutes}m {seconds}s"
+    hours: "{hours}h {minutes}m {seconds}s"
+    minutes: "{minutes}m {seconds}s"
+    seconds: "{seconds}s"
+
+# Daily limit messages
+limits:
+  reached: "&cYou have reached your daily limit for {crate_display} &c({current}/{max})!"
+  remaining: "&7Daily opens remaining: &e{remaining}/{max}"
+  reset: "&aYour daily limits have been reset!"
+  reset_in: "&7Daily reset in: &e{time}"
+
+# Pity protection messages
+pity:
+  increased: "&eYour luck is building up... ({current}/{threshold})"
+  triggered: "&6✨ Your luck paid off! Guaranteed rare reward incoming! ✨"
+  reset: "&7Your luck counter has been reset."
+
+# Block binding messages
+blocks:
+  bound: "&aBound {crate_display} &ato block at &e{location}"
+  unbound: "&aUnbound crate from block at &e{location}"
+  already_bound: "&cThis block is already bound to {crate_display}!"
+  not_bound: "&cThis block is not bound to any crate!"
+  look_at_block: "&cLook at a block within 5 blocks distance!"
+  invalid_world: "&cCannot bind crates in this world!"
+
+# Offline queue messages
+queue:
+  offline_rewards: "&aYou have &e{count} &areward{s} waiting from offline crate openings!"
+  queue_full: "&cYour offline reward queue is full! Please claim your rewards first."
+  claiming_rewards: "&7Claiming your offline rewards..."
+  rewards_claimed: "&aSuccessfully claimed &e{count} &aoffline reward{s}!"
+  no_rewards: "&7You have no offline rewards to claim."
+
+# Preview GUI messages
+preview:
+  title: "&8Preview: {crate_display}"
+  reward_chance: "&7Chance: &f{percentage}%"
+  reward_weight: "&7Weight: &f{weight}"
+  reward_tier: "&7Tier: {tier_color}{tier_name}"
+  bundle_contents: "&7Bundle contains:"
+  total_rewards: "&7Total rewards: &f{count}"
+  close_button: "&cClose Preview"
+
+# Statistics messages
+stats:
+  title: "&6&l{player}'s Crate Statistics"
+  total_opens: "&7Total opens: &f{count}"
+  money_earned: "&7Money earned: &f${amount}"
+  items_received: "&7Items received: &f{count}"
+  rare_finds: "&7Rare finds: &f{count}"
+  last_open: "&7Last opened: &f{time}"
+  favorite_crate: "&7Favorite crate: &f{crate}"
+  luck_streak: "&7Current luck: &f{count}/{threshold}"
+  no_stats: "&7No statistics available for this player."
+
+# Leaderboard messages
+leaderboards:
+  title: "&6&l{leaderboard_name}"
+  entry: "&7{position}. &f{player} &7- &e{value}"
+  your_position: "&7Your position: &f#{position}"
+  not_ranked: "&7You are not ranked yet!"
+  updating: "&7Leaderboard updating..."
+
+# Shop messages
+shop:
+  title: "&6&lCrate Key Shop"
+  purchase_success: "&aPurchased &e{amount}x {item_name} &afor &e{cost}!"
+  purchase_failed: "&cInsufficient {currency_type}! Need &e{cost}&c, have &e{balance}"
+  item_unavailable: "&cThis item is currently unavailable!"
+  transaction_failed: "&cTransaction failed! Please try again."
+  currency_types:
+    money: "money"
+    player_points: "points"
+    custom: "gems"
+
+# Animation messages
+animations:
+  opening: "&eOpening {crate_display}&e..."
+  rolling: "&7Rolling for rewards..."
+  finalizing: "&aFinalizing reward..."
+
+# Error messages
+errors:
+  database_error: "&cDatabase error occurred! Please contact an administrator."
+  command_error: "&cAn error occurred while executing this command!"
+  save_error: "&cFailed to save data! Please try again."
+  load_error: "&cFailed to load data! Using defaults."
+  migration_error: "&cData migration failed! Please check console for details."
+
+# Time format messages
+time:
+  now: "now"
+  never: "never"
+  format:
+    full: "{days}d {hours}h {minutes}m {seconds}s"
+    short: "{hours}h {minutes}m"
+    minimal: "{minutes}m"
+
+# GUI element messages
+gui:
+  previous_page: "&7Previous Page"
+  next_page: "&7Next Page"
+  back_button: "&cBack"
+  close_button: "&cClose"
+  refresh_button: "&aRefresh"
+  confirm_button: "&aConfirm"
+  cancel_button: "&cCancel"
+  loading: "&7Loading..."
+  page_info: "&7Page {current}/{total}"
+
+# Placeholder messages (for PlaceholderAPI)
+placeholders:
+  no_data: "N/A"
+  unlimited: "∞"
+  none: "None"
+
+# Admin messages
+admin:
+  player_data_reset: "&aReset all data for player &e{player}"
+  data_migration_started: "&7Starting data migration..."
+  data_migration_completed: "&aData migration completed! Migrated &e{count} &arecords."
+  debug_enabled: "&aDebug mode enabled."
+  debug_disabled: "&cDebug mode disabled."
+  cache_cleared: "&aCleared all caches."
+  maintenance_enabled: "&cMaintenance mode enabled. Players cannot open crates."
+  maintenance_disabled: "&aMaintenance mode disabled."

@@ -1,0 +1,50 @@
+name: LootCrates
+main: com.lootcrates.LootCratesPlugin
+version: 1.2.0
+api-version: '1.21'
+authors: [Leon]
+depend: [Vault, SpecialItems]
+softdepend: [PlaceholderAPI, PlayerPoints, TokenManager, DecentHolograms, ItemsAdder, Oraxen, LuckPerms]
+description: Advanced crate system with tiers, animations, pity protection, economy integration
+
+commands:
+  crate:
+    description: Crate admin & player commands
+    usage: /crate <open|givekey|preview|list|reload|bind|unbind|stats|shop>
+    aliases: [lootcrates, lc]
+    permission: lootcrates.use
+
+permissions:
+  lootcrates.use:
+    description: Basic crate usage
+    default: true
+  lootcrates.open:
+    description: Open crates
+    default: true
+  lootcrates.preview:
+    description: Preview crate contents
+    default: true
+  lootcrates.admin:
+    description: Admin commands
+    default: op
+  lootcrates.admin.givekey:
+    description: Give keys to players
+    default: op
+  lootcrates.admin.reload:
+    description: Reload plugin configuration
+    default: op
+  lootcrates.admin.bind:
+    description: Bind crates to blocks
+    default: op
+  lootcrates.admin.stats:
+    description: View player statistics
+    default: op
+  lootcrates.admin.force:
+    description: Force open crates for testing
+    default: op
+  lootcrates.bypass.cooldown:
+    description: Bypass crate cooldowns
+    default: op
+  lootcrates.bypass.limit:
+    description: Bypass daily limits
+    default: op
